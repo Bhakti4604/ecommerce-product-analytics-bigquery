@@ -2,6 +2,7 @@ import streamlit as st
 from google.cloud import bigquery
 import pandas as pd
 import plotly.express as px
+from google.oauth2 import service_account
 
 # ============================================================
 # Page Configuration
@@ -19,8 +20,14 @@ st.set_page_config(
 
 @st.cache_resource
 def get_bigquery_client():
-    return bigquery.Client(project="bhakti-510718")
+    credentials = service_account.Credentials.from_service_account_info(
+        dict(st.secrets["gcp_service_account"])
+    )
 
+    return bigquery.Client(
+        project="bhakti-510718",
+        credentials=credentials
+    )
 
 client = get_bigquery_client()
 
